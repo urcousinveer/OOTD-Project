@@ -1,95 +1,140 @@
-// web/src/components/HomePage.jsx
-
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import {
-  getCurrentPositionAsync,
-  fetchWeatherAsync,
-} from '../services/LocationWeatherService';
+import WardrobeNavBar from './WardrobeNavBar';
+import CategorySection from './CategorySection';
+import MainPage from './MainPage';
+import { getCurrentPositionAsync, fetchWeatherAsync } from '../services/LocationWeatherService';
 import { getSuggestedOutfit } from '../services/OutfitService';
 
-const Container = styled.div`
-  text-align: center;
-  margin-top: 40px;
-`;
-
-const Message = styled.p`
-  text-align: center;
-  margin-top: 40px;
-  font-size: 16px;
-`;
-
-const City = styled.h2`
-  margin-bottom: 8px;
-`;
-
-const Temperature = styled.p`
-  font-size: 48px;
-  margin: 4px 0;
-`;
-
-const Description = styled.p`
-  text-transform: capitalize;
-  margin: 4px 0 24px;
-`;
-
-const OutfitContainer = styled.div`
-  margin-top: 24px;
-`;
-
-const OutfitTitle = styled.h3`
-  margin-bottom: 8px;
-`;
-
-const OutfitText = styled.p`
-  font-size: 18px;
-  margin: 0;
-`;
-
 export default function HomePage() {
+  // Weather state
   const [weather, setWeather] = useState(null);
-  const [status, setStatus] = useState('loading'); // 'loading' | 'error' | 'ready'
+  const [status, setStatus] = useState('loading');
   const [error, setError] = useState('');
 
+  // Wardrobe state
+  const [selectedSidebar, setSelectedSidebar] = useState("Home");
+  const [selectedCategory, setSelectedCategory] = useState("T-Shirts");
+  const [view, setView] = useState("wardrobe");
+  const [clothes, setClothes] = useState({
+    "T-Shirts": [],
+    "Jeans": [],
+    "Jackets": [],
+    "Hoodies": [],
+  });
+
+  // Sidebar click handler
+  const handleSidebarClick = (option) => {
+    setSelectedSidebar(option.label);
+    if (option.label === "Add More Clothes") setView("main");
+    else setView("wardrobe");
+  };
+
+  // Add clothing handler
+  const handleAddClothing = (category, item) => {
+    setClothes((prev) => ({
+      ...prev,
+      [category]: [...prev[category], item],
+    }));
+    setSelectedCategory(category);
+    setView("wardrobe");
+  };
+
+  // Weather fetching on mount
   useEffect(() => {
-    (async () => {
-      try {
-        const coords = await getCurrentPositionAsync();
-        const data = await fetchWeatherAsync(coords);
+    setStatus('loading');
+    setError('');
+    getCurrentPositionAsync()
+      .then(coords => fetchWeatherAsync(coords))
+      .then(data => {
         setWeather({
           city: data.name,
           temp: Math.round(data.main.temp),
           desc: data.weather[0].description,
         });
         setStatus('ready');
-      } catch (e) {
-        setError(e.message);
+      })
+      .catch(err => {
+        setError(err.message || 'Failed to fetch weather');
         setStatus('error');
-      }
-    })();
+      });
   }, []);
 
-  if (status === 'loading') {
-    return <Message>Loading weather…</Message>;
-  }
-
-  if (status === 'error') {
-    return <Message>Could not load weather: {error}</Message>;
-  }
-
-  // weather is ready
-  const outfit = getSuggestedOutfit(weather.temp, weather.desc);
-
   return (
-    <Container>
-      <City>Current Weather in {weather.city}</City>
-      <Temperature>{weather.temp}°C</Temperature>
-      <Description>{weather.desc}</Description>
+    <div className="app-layout">
+      {/* Sidebar */}
+      <div className="sidebar">
+        <div className="sidebar-title">Outfit</div>
+        {["Home", "About", "Generate Outfit for Today", "Add More Clothes"].map(label => (
+          <button
+            key={label}
+            className={`sidebar-link${selectedSidebar === label ? " selected" : ""}`}
+            onClick={() => handleSidebarClick({ label })}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
 
-      <OutfitContainer>
-        <OutfitTitle>Suggested Outfit</OutfitTitle>
-        <OutfitText>{outfit}</OutfitText>
-      </OutfitContainer>
-    </Container>
+      {/* Wardrobe/Main content */}
+      <div className="main-wardrobe-container">
+        <div className="wardrobe-heading">My Wardrobe</div>
+        {view === "wardrobe" && (
+          <>
+            <WardrobeNavBar
+              selected={selectedCategory}
+              onCategorySelect={setSelectedCategory}
+            />
+            <div style={{ marginTop: 36, marginBottom: 40 }}>
+              <CategorySection items={clothes[selectedCategory]} />
+              <button
+                className="add-more-clothes-btn"
+                onClick={() => setView("main")}
+              >
+                Add More Clothes
+              </button>
+            </div>
+          </>
+        )}
+        {view === "main" && (
+          <div>
+            <button
+              className="back-to-wardrobe-btn"
+              onClick={() => setView("wardrobe")}
+            >
+              Back to Wardrobe
+            </button>
+            <MainPage clothes={clothes} onAddClothing={handleAddClothing} />
+          </div>
+        )}
+      </div>
+
+      {/* Weather Panel */}
+     <div className="weather-panel">
+  {status === 'loading' && <div>Loading weather...</div>}
+  {status === 'error' && (
+    <div style={{ color: 'crimson', fontWeight: 500 }}>
+      {error}
+      <br />
+      <span style={{ fontWeight: 400, fontSize: 14 }}>Try allowing location access.</span>
+    </div>
+  )}
+  {status === 'ready' && weather && (
+    <>
+      <div className="weather-location">
+        <span role="img" aria-label="pin">📍</span> Current Weather in {weather.city}
+      </div>
+      <div className="weather-temp">
+        {weather.temp}°C
+      </div>
+      <div className="weather-desc">{weather.desc}</div>
+      <div className="weather-suggestion-title">Suggested Outfit</div>
+      <div className="weather-suggestion">
+        {getSuggestedOutfit(weather.temp, weather.desc)}
+      </div>
+    </>
+  )}
+    </div>
+
+    </div>
   );
 }
