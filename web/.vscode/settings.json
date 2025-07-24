@@ -1,0 +1,18 @@
+{
+    // Let ESLint handle fixing on save:
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+  
+    // Don’t have VS Code format with its default formatter,
+    // since Prettier is wired into ESLint now:
+    "editor.formatOnSave": false,
+  
+    // Show ESLint status in the status bar:
+    "eslint.alwaysShowStatus": true,
+  
+    // Use the Prettier extension for manual formatting commands:
+    "prettier.enableDebugLogs": false,
+    "prettier.requireConfig": true
+  }
+  

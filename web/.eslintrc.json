@@ -1,0 +1,29 @@
+{
+    "env": {
+      "browser": true,
+      "es2021": true,
+      "jest": true                // enable Jest globals
+    },
+    "settings": {
+      "react": {
+        "version": "detect"       // auto-detect React version for eslint-plugin-react
+      }
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:prettier/recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
+    "plugins": ["react"],
+    "rules": {
+      "react/react-in-jsx-scope": "off"  // turn off the old React-in-scope rule
+    }
+  }
+  
