@@ -1,18 +1,14 @@
 const mongoose = require('mongoose');
 
 const clothingItemSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true // ✅ makes userId mandatory
-  },
-  name: String,
+  email: { type: String, required: true },
   type: String,
+  tags: String,
   color: String,
-  season: [String],
   formality: String,
   warmth: Number,
-  imageUrl: String
+  imageBase64: String, // store image as base64 string
+  createdAt: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('ClothingItem', clothingItemSchema);
