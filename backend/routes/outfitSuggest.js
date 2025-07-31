@@ -7,7 +7,7 @@ const Wardrobe = require('../main/wardrobe'); // MongoDB model
 // Example endpoint: /suggest-outfit?email=user@example.com
 router.get('/suggest-outfit', async (req, res) => {
   const { email } = req.query;
-
+const OPENWEATHER_API_KEY = '93d42de33df144236981522e7613bfc0'; // ← your key here
   try {
     // 1. Fetch current weather
     const weatherResponse = await axios.get('https://api.openweathermap.org/data/2.5/weather', {
@@ -17,7 +17,7 @@ router.get('/suggest-outfit', async (req, res) => {
      
       }
     });
-
+//
     const temp = weatherResponse.data.main.temp;
     const weatherMain = weatherResponse.data.weather[0].main;
 

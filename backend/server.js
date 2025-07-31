@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
+const wardrobeRoutes = require('./main/wardrobe');
 
 const app = express();
 app.use(cors());
@@ -9,6 +10,13 @@ app.use(express.json());
 
 const User = require('./models/User');
 const ClothingItem = require('./models/ClothingItem');
+const outfitSuggestRoute = require('./routes/outfitSuggest');
+const outfitReplaceRoute = require('./routes/outfitReplace');
+
+const app = express();
+app.use(cors());
+app.use(express.json({ limit: '10mb' })); // allow base64 images
+
 
 // --- Connect to MongoDB ---
 mongoose.connect(process.env.MONGO_URI)
@@ -92,5 +100,13 @@ app.get('/api/clothing/:email', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch clothing items' });
   }
 });
+
+
+
+app.use('/api/wardrobe', wardrobeRoutes);
+app.use('/api/user', require('./routes/userRoute'));
+app.use('/suggest-outfit', outfitSuggestRoute);
+app.use('/replace-item', outfitReplaceRoute);
+
 
 app.listen(5000, () => console.log(' Server on port 5000'));
