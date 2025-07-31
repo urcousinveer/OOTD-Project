@@ -1,10 +1,25 @@
 // backend/models/User.js
+const express = require('express');
+const pasth = require("path");
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now }
+  name: String,
+  email: { type: String, unique: true },
+  password: String
 });
 
-module.exports = mongoose.model('User', userSchema); // 'users' collection
+// encrypt password before saving
+userSchema.pre('save', async function () {
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+});
+
+// compare password
+userSchema.methods.checkPassword = function (password) {
+  return bcrypt.compare(password, this.password);
+};
+
+module.exports = mongoose.model('User', userSchema);
