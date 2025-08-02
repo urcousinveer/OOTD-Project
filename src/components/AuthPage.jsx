@@ -179,11 +179,13 @@ export default function AuthPage({ mode }) {
   const { login } = useContext(AuthContext); // ← grab login()
   const navigate = useNavigate(); // ← grab navigate()
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // TODO: replace this stub with real auth logic
     // e.g. const token = await api.login({ email });
+
     login('dummy-token'); // flip the auth flag
     navigate('/'); // send them to the protected HomePage
   };
@@ -195,6 +197,7 @@ export default function AuthPage({ mode }) {
         <Label htmlFor="email">
           {isLogin ? 'Enter your email address' : 'Sign in with email address'}
         </Label>
+        
         <InputGroup>
           <Icon>
             <FaEnvelope />
@@ -203,17 +206,20 @@ export default function AuthPage({ mode }) {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+          </InputGroup>
+          
+          <InputGroup>
+          <Label htmlFor="password">
+          {isLogin ? 'Enter your password' : 'Sign in with email address'}
+        </Label>
+          <Input id="password" type="password" placeholder="password" value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            
+          />
         </InputGroup>
         <Button type="submit">{isLogin ? 'Log in' : 'Sign up'}</Button>
-        <Divider>Or continue with</Divider>
-        <SocialButtons>
-          <SocialBtn>
-            <FaGoogle /> Google
-          </SocialBtn>
-          <SocialBtn>
-            <FaFacebookF /> Facebook
-          </SocialBtn>
-        </SocialButtons>
+
         <ToggleLink href={isLogin ? '/signup' : '/login'}>
           {isLogin
             ? "Don't have an account? Sign up"
