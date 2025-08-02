@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const ClothingItem = require('../Models/Apparel');
+const ClothingItem = require('../models/ClothingItem');
 
 // Add a clothing item (with image in base64)
 router.post('/add', async (req, res) => {

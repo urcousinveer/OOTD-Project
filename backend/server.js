@@ -13,11 +13,6 @@ const ClothingItem = require('./models/ClothingItem');
 const outfitSuggestRoute = require('./routes/outfitSuggest');
 const outfitReplaceRoute = require('./routes/outfitReplace');
 
-const app = express();
-app.use(cors());
-app.use(express.json({ limit: '10mb' })); // allow base64 images
-
-
 // --- Connect to MongoDB ---
 mongoose.connect(process.env.MONGO_URI)
   .then(async () => {
