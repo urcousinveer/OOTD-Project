@@ -23,7 +23,7 @@ mongoose.connect(process.env.MONGO_URI)
     if (!user) {
       user = await User.create({
         email: 'ajay@gmail.com',
-        password: 'Ajay123'
+        password: 'Ajay123',
       });
       console.log('✅ Test user created!');
     } else {

@@ -1,0 +1,146 @@
+/* src/components/HomePage.css */
+
+/* Theme tokens */
+:root {
+  --color-primary:   #693a07;
+  --color-accent:    #E7C175;
+  --color-bg:        #F1F0EB;
+  --color-surface:   #FFFFFF;
+  --color-text:      #5F3C0D;
+  --font-main:       "AmericanStd", sans-serif;
+  --radius:          1rem;
+  --gap-xs:          0.5rem;
+  --gap-sm:          0.5rem;
+  --gap-md:          1rem;
+  --gap-lg:          2rem;
+  --pad:             1.5rem;
+  --sidebar-w:       20%;
+  --main-w:          60%;
+  --nav-height:      3.5rem;
+}
+
+/* Overall layout */
+.app-layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) var(--main-w) var(--sidebar-w);
+  gap: var(--gap-lg);
+  padding: var(--pad) var(--pad) calc(var(--nav-height) + var(--pad)) var(--pad);
+  transition: grid-template-columns 0.4s ease-in-out;
+  min-height: 100vh;
+  font-family: var(--font-main);
+}
+
+/* Sidebar */
+.sidebar {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: var(--pad);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.sidebar-title {
+  font-size: 1.5rem;
+  color: var(--color-primary);
+  margin-bottom: var(--gap-md);
+}
+.sidebar-link {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: var(--gap-sm) var(--gap-md);
+  margin-bottom: var(--gap-sm);
+  background: transparent;
+  border: none;
+  font-size: 1rem;
+  color: var(--color-text);
+  cursor: pointer;
+  border-radius: var(--radius);
+  transition: background 0.2s;
+}
+.sidebar-link.selected,
+.sidebar-link:hover {
+  background: var(--color-accent);
+  color: var(--color-surface);
+}
+
+/* Main wardrobe panel */
+.main-wardrobe-container {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: var(--pad);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.wardrobe-heading {
+  font-size: 2rem;
+  color: var(--color-accent);
+  text-align: center;
+  margin-bottom: var(--gap-lg);
+}
+.add-more-clothes-btn,
+.back-to-wardrobe-btn {
+  background: var(--color-primary);
+  color: var(--color-surface);
+  border: none;
+  padding: var(--gap-sm) var(--gap-lg);
+  border-radius: var(--radius);
+  cursor: pointer;
+  margin-top: var(--gap-md);
+}
+
+/* Weather panel */
+.weather-panel {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: var(--pad);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  color: var(--color-text);
+}
+.weather-location { margin-bottom: var(--gap-sm); }
+.weather-temp     { font-size: 2.5rem; font-weight: bold; margin-bottom: var(--gap-sm); }
+.weather-desc     { font-style: italic; margin-bottom: var(--gap-md); }
+.weather-suggestion-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--color-accent);
+  margin-bottom: var(--gap-sm);
+}
+.weather-suggestion { font-size: 1rem; }
+
+/* Mobile (≤768px) */
+@media (max-width: 768px) {
+  .app-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr var(--nav-height);
+    grid-template-areas:
+      "main"
+      "weather"
+      "sidebar";
+  }
+  .main-wardrobe-container {
+    grid-area: main;
+    margin: var(--gap-sm);
+    overflow-y: auto;
+  }
+  .weather-panel {
+    grid-area: weather;
+    margin: 0 var(--gap-sm) var(--gap-sm);
+    overflow-y: auto;
+  }
+  .sidebar {
+    grid-area: sidebar;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: var(--nav-height);
+    background: var(--color-surface);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+    z-index: 1000;
+    border-radius: 0 0 var(--radius) var(--radius);
+  }
+  .sidebar-link {
+    margin: 0;
+    padding: var(--gap-xs) var(--gap-sm);
+    font-size: 0.9rem;
+  }
+}

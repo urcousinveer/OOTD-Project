@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const outfitHistorySchema = new mongoose.Schema({
   Email: String,
   itemId: mongoose.Schema.Types.ObjectId,
-  wornDate: { type: Date, default: Date.now }
+  wornDate: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model('OFHistory', outfitHistorySchema);
