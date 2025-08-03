@@ -5,6 +5,9 @@ import styled from 'styled-components';
 import { FaEnvelope, FaGoogle, FaFacebookF } from 'react-icons/fa';
 import LeftPanelImg from '../assets/left-panel.jpeg';
 import { AuthContext } from '../contexts/AuthContext';
+import axios from 'axios'
+
+
 
 const BREAKPOINT = '768px';
 
@@ -176,8 +179,11 @@ const ToggleLink = styled.a`
 
 export default function AuthPage({ mode }) {
   const isLogin = mode === 'login';
-  const { login } = useContext(AuthContext); // ← grab login()
+  //const { login } = useContext(AuthContext); // ← grab login()
+  
   const navigate = useNavigate(); // ← grab navigate()
+  const { login } = useContext(AuthContext);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -185,9 +191,18 @@ export default function AuthPage({ mode }) {
     e.preventDefault();
     // TODO: replace this stub with real auth logic
     // e.g. const token = await api.login({ email });
+    axios.post("http://localhost:5000/api/login", {email, password})
+    .then(result => {console.log(result)
+      if (result.data.message === "Login successful" && result.data.token) {
+        login(result.data.token);   // ✅ store in context/localStorage
+        navigate('/');  // send them to the protected HomePage
+      }
+    })
+    .catch(err => console.log(err))
 
-    login('dummy-token'); // flip the auth flag
-    navigate('/'); // send them to the protected HomePage
+    //login('dummy-token'); // flip the auth flag
+    
+    
   };
   return (
     <Page>

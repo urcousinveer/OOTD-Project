@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const clothingItemSchema = new mongoose.Schema({
-  email: { type: String, required: true },
+  email: { type: String },
   type: String,
   tags: String,
   color: String,

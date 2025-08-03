@@ -12,6 +12,7 @@ import {
 import { getSuggestedOutfit } from '../services/OutfitService';
 import './HomePage.css';
 
+
 export default function HomePage() {
   // Weather state
   const [weather, setWeather]   = useState(null);

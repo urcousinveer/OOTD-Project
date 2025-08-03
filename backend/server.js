@@ -9,12 +9,13 @@ app.use(cors());
 app.use(express.json());
 
 const User = require('./models/User');
-const ClothingItem = require('./models/ClothingItem');
+
 const outfitSuggestRoute = require('./routes/outfitSuggest');
 const outfitReplaceRoute = require('./routes/outfitReplace');
 
 // --- Connect to MongoDB ---
 mongoose.connect(process.env.MONGO_URI)
+
   .then(async () => {
     console.log('✅ Connected to MongoDB');
 
@@ -22,6 +23,7 @@ mongoose.connect(process.env.MONGO_URI)
     let user = await User.findOne({ email: 'ajay@gmail.com' });
     if (!user) {
       user = await User.create({
+        name: 'Ajay',
         email: 'ajay@gmail.com',
         password: 'Ajay123',
       });
@@ -49,12 +51,16 @@ mongoose.connect(process.env.MONGO_URI)
   })
   .catch(err => console.error(' Connection error:', err));
 
-// --- API ROUTES ---
 
+
+// --- API ROUTES ---
+const userRoute = require('./routes/userRoute');
+app.use("/api", userRoute);
 // Create a new clothing item
+const ClothingItem = require('./models/ClothingItem');
 app.post('/api/clothing', async (req, res) => {
   try {
-    const { email, name, type, color, season, formality, warmth, imageUrl } = req.body;
+    const { email, type, color, season, formality, warmth, imageUrl } = req.body;
 
     //  Find the user by email
     const user = await User.findOne({ email });
@@ -64,8 +70,7 @@ app.post('/api/clothing', async (req, res) => {
 
     // Create and save the clothing item
     const item = await ClothingItem.create({
-      userId: user._id,
-      name,
+      email,
       type,
       color,
       season,
@@ -99,7 +104,7 @@ app.get('/api/clothing/:email', async (req, res) => {
 
 
 app.use('/api/wardrobe', wardrobeRoutes);
-app.use('/api/user', require('./routes/userRoute'));
+
 app.use('/suggest-outfit', outfitSuggestRoute);
 app.use('/replace-item', outfitReplaceRoute);
 
