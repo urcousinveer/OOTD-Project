@@ -189,8 +189,7 @@ export default function AuthPage({ mode }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: replace this stub with real auth logic
-    // e.g. const token = await api.login({ email });
+
     axios.post("http://localhost:5000/api/login", {email, password})
     .then(result => {console.log(result)
       if (result.data.message === "Login successful" && result.data.token) {
