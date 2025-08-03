@@ -3,11 +3,12 @@ const express = require('express');
 const pasth = require("path");
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema({
   name: String,
-  email: { type: String, unique: true },
-  password: String
+  email: { type: String, unique: true, required: true },
+  password: {type: String, required: true}
 });
 
 // encrypt password before saving
