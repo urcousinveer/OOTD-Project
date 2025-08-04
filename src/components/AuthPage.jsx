@@ -5,7 +5,12 @@ import styled from 'styled-components';
 import { FaEnvelope, FaGoogle, FaFacebookF } from 'react-icons/fa';
 import LeftPanelImg from '../assets/left-panel.jpeg';
 import { AuthContext } from '../contexts/AuthContext';
+<<<<<<< Updated upstream
 import axios from 'axios';
+=======
+import axios from 'axios'
+
+>>>>>>> Stashed changes
 
 const BREAKPOINT = '768px';
 
@@ -175,11 +180,18 @@ const ToggleLink = styled.a`
   font-size: 0.9rem;
 `;
 
+const ErrorMessage = styled.p`
+  color: #ff4d4f;
+  margin-bottom: 1rem;
+  font-weight: bold;
+`;
+
 export default function AuthPage({ mode }) {
   const isLogin = mode === 'login';
   //const { login } = useContext(AuthContext); // ← grab login()
   const navigate = useNavigate(); // ← grab navigate()
   const { login } = useContext(AuthContext);
+  const [error, setError] = useState('');
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -194,16 +206,31 @@ export default function AuthPage({ mode }) {
         navigate('/');  // send them to the protected HomePage
       }
     })
+<<<<<<< Updated upstream
     .catch(err => console.log(err))
 
     //login('dummy-token'); // flip the auth flag
 
+=======
+    .catch(err => {
+      // If backend returned 401, show our custom message
+      if (err.response?.status === 401) {
+        setError("Invalid Email / Password");
+      } else {
+        setError("An unexpected error occurred");
+        console.error(err);
+      }
+    });
+>>>>>>> Stashed changes
   };
   return (
     <Page>
       <Hero />
       <FormWrapper as="form" onSubmit={handleSubmit}>
         <Title>{isLogin ? 'LOG IN' : 'SIGN UP'}</Title>
+
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+
         <Label htmlFor="email">
           {isLogin ? 'Enter your email address' : 'Sign in with email address'}
         </Label>
