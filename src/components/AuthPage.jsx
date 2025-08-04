@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import { FaEnvelope, FaGoogle, FaFacebookF } from 'react-icons/fa';
 import LeftPanelImg from '../assets/left-panel.jpeg';
 import { AuthContext } from '../contexts/AuthContext';
+import axios from 'axios'
+
 
 const BREAKPOINT = '768px';
 
@@ -200,12 +202,6 @@ export default function AuthPage({ mode }) {
         navigate('/');  // send them to the protected HomePage
       }
     })
-<<<<<<< Updated upstream
-    .catch(err => console.log(err))
-
-    //login('dummy-token'); // flip the auth flag
-
-=======
     .catch(err => {
       // If backend returned 401, show our custom message
       if (err.response?.status === 401) {
@@ -215,7 +211,7 @@ export default function AuthPage({ mode }) {
         console.error(err);
       }
     });
->>>>>>> Stashed changes
+
   };
   return (
     <Page>
