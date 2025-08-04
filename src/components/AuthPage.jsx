@@ -5,12 +5,6 @@ import styled from 'styled-components';
 import { FaEnvelope, FaGoogle, FaFacebookF } from 'react-icons/fa';
 import LeftPanelImg from '../assets/left-panel.jpeg';
 import { AuthContext } from '../contexts/AuthContext';
-<<<<<<< Updated upstream
-import axios from 'axios';
-=======
-import axios from 'axios'
-
->>>>>>> Stashed changes
 
 const BREAKPOINT = '768px';
 
