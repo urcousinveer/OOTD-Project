@@ -17,6 +17,7 @@
   --sidebar-w:       20%;
   --main-w:          60%;
   --nav-height:      3.5rem;
+  --weather-panel:    20%;
 }
 
 /* Overall layout */
@@ -93,6 +94,7 @@
   padding: var(--pad);
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   color: var(--color-text);
+  
 }
 .weather-location { margin-bottom: var(--gap-sm); }
 .weather-temp     { font-size: 2.5rem; font-weight: bold; margin-bottom: var(--gap-sm); }
@@ -106,7 +108,7 @@
 .weather-suggestion { font-size: 1rem; }
 
 /* Mobile (≤768px) */
-@media (max-width: 768px) {
+@media (max-width: 800px) {
   .app-layout {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr var(--nav-height);

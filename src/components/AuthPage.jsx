@@ -5,9 +5,7 @@ import styled from 'styled-components';
 import { FaEnvelope, FaGoogle, FaFacebookF } from 'react-icons/fa';
 import LeftPanelImg from '../assets/left-panel.jpeg';
 import { AuthContext } from '../contexts/AuthContext';
-import axios from 'axios'
-
-
+import axios from 'axios';
 
 const BREAKPOINT = '768px';
 
@@ -180,7 +178,6 @@ const ToggleLink = styled.a`
 export default function AuthPage({ mode }) {
   const isLogin = mode === 'login';
   //const { login } = useContext(AuthContext); // ← grab login()
-  
   const navigate = useNavigate(); // ← grab navigate()
   const { login } = useContext(AuthContext);
 
@@ -200,8 +197,7 @@ export default function AuthPage({ mode }) {
     .catch(err => console.log(err))
 
     //login('dummy-token'); // flip the auth flag
-    
-    
+
   };
   return (
     <Page>

@@ -1,0 +1,53 @@
+/* === Upload Form Card === */
+.upload-form-card {
+    background-color: rgba(255,255,255,0.9);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    padding: 32px;
+    margin: 30px auto;
+    max-width: 600px;
+  }
+  
+  /* Title matches your palette */
+  .upload-form-title {
+    font-family: "Playfair Display", serif;
+    font-size: 1.8rem;
+    color: #8a5a2f;
+    margin-bottom: 24px;
+  }
+  
+  /* Layout the form in a nice grid */
+  .upload-form-card form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 16px;
+  }
+  
+  /* Inputs get roomy padding & rounded borders */
+  .upload-form-card form input {
+    padding: 0.6rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    width: 100%;
+  }
+  
+  /* Make the “Upload” button pop */
+  .upload-form-card form button {
+    grid-column: 1 / -1;         /* span both columns */
+    justify-self: start;
+    padding: 0.75rem 1.5rem;
+    background-color: #5a2e0c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .upload-form-card form button:hover {
+    background-color: #442107;
+  }
+  

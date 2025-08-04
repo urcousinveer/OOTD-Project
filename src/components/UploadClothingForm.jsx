@@ -50,7 +50,6 @@ const UploadClothingForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Upload Clothing Item</h2>
 
       {/* email is hidden from user, but keep it in state */}
       <input type="hidden" name="email" value={formData.email} />
@@ -61,45 +60,45 @@ const UploadClothingForm = () => {
         value={formData.name}
         onChange={handleChange}
         required
-      />
+      /><br></br><br></br>
       <input
         name="type"
         placeholder="Type (e.g. shirt, jacket)"
         value={formData.type}
         onChange={handleChange}
         required
-      />
+      /><br></br><br></br>
       <input
         name="color"
         placeholder="Color"
         value={formData.color}
         onChange={handleChange}
-      />
+      /><br></br><br></br>
       <input
         name="season"
         placeholder="Season (e.g. summer)"
         value={formData.season}
         onChange={handleChange}
-      />
+      /><br></br><br></br>
       <input
         name="formality"
         placeholder="Formality (e.g. casual)"
         value={formData.formality}
         onChange={handleChange}
-      />
+      /><br></br><br></br>
       <input
         name="warmth"
         type="number"
         placeholder="Warmth (1-10)"
         value={formData.warmth}
         onChange={handleChange}
-      />
+      /><br></br><br></br>
       <input
         name="imageUrl"
         placeholder="Image URL (optional)"
         value={formData.imageUrl}
         onChange={handleChange}
-      />
+      /><br></br><br></br>
 
       <button type="submit">Upload</button>
     </form>

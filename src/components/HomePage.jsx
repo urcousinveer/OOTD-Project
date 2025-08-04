@@ -15,22 +15,22 @@ import './HomePage.css';
 
 export default function HomePage() {
   // Weather state
-  const [weather, setWeather]   = useState(null);
-  const [status, setStatus]     = useState('loading');
-  const [error, setError]       = useState('');
+  const [weather, setWeather] = useState(null);
+  const [status, setStatus] = useState('loading');
+  const [error, setError] = useState('');
 
   // Wardrobe state
-  const [selectedSidebar, setSelectedSidebar]   = useState('Home');
+  const [selectedSidebar, setSelectedSidebar] = useState('Home');
   const [selectedCategory, setSelectedCategory] = useState('T-Shirts');
-  const [view, setView]                         = useState('wardrobe');
-  const [clothes, setClothes]                   = useState({
+  const [view, setView] = useState('wardrobe');
+  const [clothes, setClothes] = useState({
     'T-Shirts': [], Jeans: [], Jackets: [], Hoodies: []
   });
 
   // Handlers
   const handleSidebarClick = ({ label }) => {
     setSelectedSidebar(label);
-    setView(label === 'Add More Clothes' ? 'main' : 'wardrobe');
+    setView(label === 'Add Clothes' ? 'main' : 'wardrobe');
   };
   const handleAddClothing = (cat, item) => {
     setClothes(prev => ({ ...prev, [cat]: [...prev[cat], item] }));
@@ -92,8 +92,8 @@ export default function HomePage() {
     >
       {/* Sidebar */}
       <div className="sidebar">
-        <div className="sidebar-title">Outfit</div>
-        {['Home','About','Generate Outfit for Today','Add More Clothes'].map(label => (
+        <div className="sidebar-title">OOTD</div>
+        {['Wardrobe','About','Generate Outfit','Add Clothes'].map(label => (
           <button
             key={label}
             className={`sidebar-link${selectedSidebar===label?' selected':''}`}
@@ -106,7 +106,7 @@ export default function HomePage() {
 
       {/* Main wardrobe / Add page */}
       <div className="main-wardrobe-container">
-        <div className="wardrobe-heading">My Wardrobe</div>
+        <div className="wardrobe-heading">Welcome, </div>
         {view === 'wardrobe' ? (
           <>
             <WardrobeNavBar
@@ -115,12 +115,6 @@ export default function HomePage() {
             />
             <div style={{ marginTop: 36, marginBottom: 40 }}>
               <CategorySection items={clothes[selectedCategory]} />
-              <button
-                className="add-more-clothes-btn"
-                onClick={()=>setView('main')}
-              >
-                Add More Clothes
-              </button>
             </div>
           </>
         ) : (
