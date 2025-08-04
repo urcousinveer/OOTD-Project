@@ -2,11 +2,10 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { FaEnvelope, FaGoogle, FaFacebookF } from 'react-icons/fa';
+import { FaEnvelope, FaGoogle, FaFacebookF, FaUser } from 'react-icons/fa';
 import LeftPanelImg from '../assets/left-panel.jpeg';
 import { AuthContext } from '../contexts/AuthContext';
-import axios from 'axios'
-
+import axios from 'axios';
 
 const BREAKPOINT = '768px';
 
@@ -189,6 +188,8 @@ export default function AuthPage({ mode }) {
   const { login } = useContext(AuthContext);
   const [error, setError] = useState('');
 
+  const [name, setName] = useState('');
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -220,6 +221,23 @@ export default function AuthPage({ mode }) {
         <Title>{isLogin ? 'LOG IN' : 'SIGN UP'}</Title>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
+
+        {!isLogin && (
+          <>
+            <Label htmlFor="name">Your Name</Label>
+            <InputGroup>
+              <Icon><FaUser /></Icon>
+              <Input
+                id="name"
+                type="text"
+                placeholder="Your Name"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                required
+              />
+            </InputGroup>
+          </>
+        )}
 
         <Label htmlFor="email">
           {isLogin ? 'Enter your email address' : 'Sign in with email address'}
