@@ -25,12 +25,14 @@ mongoose
     console.log('✅ Connected to MongoDB');
 
 
-    const existsItem = await ClothingItem.findOne({
+   const existsItem = await ClothingItem.findOne({
       name:   'Black Hoodie',
+      userId: user._id,
       
     });
     if (!existsItem) {
       await ClothingItem.create({
+        userId:    user._id,
         email:  'ajay@gmail.com',
         name:      'Black Hoodie',
         type:      'jacket',
@@ -47,10 +49,38 @@ mongoose
     // ──────────────────────────────────────────────────────
   })
   .catch(err => console.error('❌ Connection error:', err));
-
 // ─── Auth / User Routes ───────────────────────────────────────────────────────
 app.use('/api', userRoute);
 
+// ─── Create a new clothing item ───────────────────────────────────────────────
+app.post('/api/clothing', async (req, res) => {
+  try {
+    console.log('→ POST /api/clothing body:', req.body);
+    const { email, name, type, color, season, formality, warmth, imageUrl } = req.body;
+
+    // 1️⃣ Find the user by email
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // 2️⃣ Create and save the clothing item
+    const item = await ClothingItem.create({
+      userId:    user._id,
+      name,
+      type,
+      color,
+      season,
+      formality,
+      warmth,
+      imageUrl,
+    });
+
+    console.log('✅ New item saved:', item);
+    return res.status(201).json({ item });
+  } catch (err) {
+    console.error('❌ Upload error:', err);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
 // ─── Debug: fetch _every_ clothing item ────────────────────────────────────────
 app.get('/api/_all_clothing', async (req, res) => {
   try {
@@ -62,7 +92,6 @@ app.get('/api/_all_clothing', async (req, res) => {
     return res.status(500).json({ error: 'Failed to fetch all items' });
   }
 });
-
 // ─── Fetch per-user items ───────────────────────────────────────────────────────
 app.get('/api/clothing/:email', async (req, res) => {
   try {
@@ -81,7 +110,6 @@ app.get('/api/clothing/:email', async (req, res) => {
     return res.status(500).json({ error: 'Failed to fetch clothing items' });
   }
 });
-
 // ─── Other Routes ──────────────────────────────────────────────────────────────
 app.use('/api/wardrobe',   wardrobeRoutes);
 app.use('/suggest-outfit', outfitSuggestRoute);
