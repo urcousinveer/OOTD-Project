@@ -195,7 +195,10 @@ export default function AuthPage({ mode }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setError('');
 
+    if (isLogin) {
+      // —— LOGIN branch ——
     axios.post("http://localhost:5000/api/login", {email, password})
     .then(result => {console.log(result)
       if (result.data.message === "Login successful" && result.data.token) {
@@ -213,7 +216,23 @@ export default function AuthPage({ mode }) {
       }
     });
 
-  };
+   } else {
+          // —— SIGN UP branch ——
+      axios
+        .post("http://localhost:5000/api/signup", { name, email, password })
+        .then(() => {
+          navigate("/login");
+        })
+        .catch(err => {
+          setError(
+            err.response?.data?.message ||
+            err.response?.data?.error   || "Sign up failed. Please try again."
+          );
+          console.error(err);
+        });
+    }
+  };  
+
   return (
     <Page>
       <Hero />
