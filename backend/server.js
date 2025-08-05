@@ -15,32 +15,23 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
+const clothingRoute = require('./routes/clothing');
+app.use('/clothing', clothingRoute);
 // ─── Connect to MongoDB & Seed Test Data ─────────────────────────────────────
 mongoose
   .connect(process.env.MONGO_URI)
   .then(async () => {
     console.log('✅ Connected to MongoDB');
 
-    // ─── TEST DATA (comment this out in production) ───────────────────────────
-    let user = await User.findOne({ email: 'ajay@gmail.com' });
-    if (!user) {
-      user = await User.create({
-        name:     'Ajay',
-        email:    'ajay@gmail.com',
-        password: 'Ajay123',
-      });
-      console.log('✅ Test user created!');
-    } else {
-      console.log('✅ Test user exists');
-    }
 
     const existsItem = await ClothingItem.findOne({
       name:   'Black Hoodie',
-      userId: user._id,
+      
     });
     if (!existsItem) {
       await ClothingItem.create({
-        userId:    user._id,
+        email:  'ajay@gmail.com',
         name:      'Black Hoodie',
         type:      'jacket',
         color:     'black',
@@ -59,36 +50,6 @@ mongoose
 
 // ─── Auth / User Routes ───────────────────────────────────────────────────────
 app.use('/api', userRoute);
-
-// ─── Create a new clothing item ───────────────────────────────────────────────
-app.post('/api/clothing', async (req, res) => {
-  try {
-    console.log('→ POST /api/clothing body:', req.body);
-    const { email, name, type, color, season, formality, warmth, imageUrl } = req.body;
-
-    // 1️⃣ Find the user by email
-    const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ error: 'User not found' });
-
-    // 2️⃣ Create and save the clothing item
-    const item = await ClothingItem.create({
-      userId:    user._id,
-      name,
-      type,
-      color,
-      season,
-      formality,
-      warmth,
-      imageUrl,
-    });
-
-    console.log('✅ New item saved:', item);
-    return res.status(201).json({ item });
-  } catch (err) {
-    console.error('❌ Upload error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
-});
 
 // ─── Debug: fetch _every_ clothing item ────────────────────────────────────────
 app.get('/api/_all_clothing', async (req, res) => {

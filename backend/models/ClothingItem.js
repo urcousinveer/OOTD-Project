@@ -9,6 +9,6 @@ const clothingItemSchema = new mongoose.Schema({
   warmth: Number,
   imageBase64: String, // store image as base64 string
   createdAt: { type: Date, default: Date.now }
-});
+}, { collection: 'clothingitems' });
 
 module.exports = mongoose.model('ClothingItem', clothingItemSchema);
