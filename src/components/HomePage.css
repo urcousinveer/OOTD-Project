@@ -39,7 +39,7 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 .sidebar-title,
-.sidebar-link.logout-button {
+.sidebar-link-logout-button {
   font-size: 1.5rem;
   color: var(--color-primary);
   margin-top: var(--gap-lg);
