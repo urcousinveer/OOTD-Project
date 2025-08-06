@@ -12,18 +12,29 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
   // On mount, check for a token in localStorage
-  useEffect(() => {
+    useEffect(() => {
     const token = localStorage.getItem('authToken');
-    const name = localStorage.getItem('userName');
-    if (token  && name) {
-      setUser({ token, name });
-    }
+    if (!token) return;
+    axios.get('http://localhost:5000/api/me', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        const { name, email } = res.data;
+        setUser({ name, email, token });
+      })
+      .catch((err) => {
+        console.error("Token invalid or expired:", err);
+        localStorage.removeItem('authToken');
+        setUser(null);
+      });
   }, []);
 
-  const login = (token, name) => {
+  const login = (token, name, email) => {
     localStorage.setItem('authToken', token);
     localStorage.setItem('userName', name);
-    setUser({token, name });
+    setUser({token, name, email });
   };
 
   const logout = async() => {
@@ -34,6 +45,7 @@ export function AuthProvider({ children }) {
     }
 
     localStorage.removeItem('authToken');
+    localStorage.removeItem('userName');
     setUser(null);
   };
 

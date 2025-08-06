@@ -31,28 +31,16 @@ export default function HomePage() {
 
 
 const { user, setUser } = useContext(AuthContext);
-  const loggedInEmail = user?.token
+if ( user=== null) {
+  return <div style={{ color: '#555', padding: '2rem' }}>Loading your wardrobe...</div>;
+}
 
-
+const loggedInEmail = user.email;
   const filteredItems = items.filter(item => item.email === loggedInEmail);
 
-
-useEffect(() => {
-  const token = localStorage.getItem("authToken");
-
-  if (!token) {
-    setUser(null);
-    return;
-  }
-
-  axios.get("http://localhost:5000/api/me", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    }
-  })
-    .then(res => setUser({ name: res.data.name, email: res.data.email }))
-    .catch(() => setUser(null));
-}, []);
+console.log("Logged-in email:", loggedInEmail);
+console.log("Clothing items:", items);
+console.log("Filtered items:", filteredItems);
 
 
 // fetch cloth

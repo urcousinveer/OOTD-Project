@@ -199,10 +199,23 @@ export default function AuthPage({ mode }) {
 
 useEffect(() => {
   const token = localStorage.getItem('authToken');
-  const name = localStorage.getItem('userName');
-  if (token && name) {
-    setUser({ email: token, name });
-  }
+  if (!token) return;
+
+  axios.get("http://localhost:5000/api/me", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  })
+    .then(res => {
+      const name = res.data.name;
+      const email = res.data.email;
+      setUser({ name, email, token });
+    })
+    .catch(() => {
+      setUser(null);
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('userName');
+    });
 }, []);
  
   const [error, setError] = useState('');
@@ -228,7 +241,7 @@ useEffect(() => {
         localStorage.setItem('authToken', token);
         localStorage.setItem('userName', result.data.name);
 
-        login(token, result.data.name);   // ✅ store in context/localStorage
+        login(token, result.data.name, result.data.email);   // ✅ store in context/localStorage
         navigate('/');  // send them to the protected HomePage
       }
     })
