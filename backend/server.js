@@ -65,7 +65,7 @@ app.post('/api/clothing', async (req, res) => {
     // 2️⃣ Create and save the clothing item
     const item = await ClothingItem.create({
       userId:    user._id,
-      email: userEmail,
+      email: user.Email,
       name,
       type,
       color,

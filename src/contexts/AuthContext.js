@@ -14,6 +14,9 @@ export function AuthProvider({ children }) {
   // On mount, check for a token in localStorage
     useEffect(() => {
     const token = localStorage.getItem('authToken');
+    const name = localStorage.getItem('userName');
+  const email = localStorage.getItem('userEmail');
+
     if (!token) return;
     axios.get('http://localhost:5000/api/me', {
       headers: {
@@ -34,6 +37,7 @@ export function AuthProvider({ children }) {
   const login = (token, name, email) => {
     localStorage.setItem('authToken', token);
     localStorage.setItem('userName', name);
+    localStorage.setItem('userEmail', email);
     setUser({token, name, email });
   };
 

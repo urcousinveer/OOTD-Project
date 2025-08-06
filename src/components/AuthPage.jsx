@@ -240,6 +240,7 @@ useEffect(() => {
       if (result.data.message === "Login successful" && token) {
         localStorage.setItem('authToken', token);
         localStorage.setItem('userName', result.data.name);
+        localStorage.setItem('userEmail', result.data.email);
 
         login(token, result.data.name, result.data.email);   // ✅ store in context/localStorage
         navigate('/');  // send them to the protected HomePage

@@ -23,34 +23,43 @@ export default function HomePage() {
 
   // clothing
   const [items, setItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
+ 
   
   // — Weather state
   const [weather, setWeather] = useState(null);
   const [status,  setStatus]  = useState('loading');
   const [error,   setError]   = useState('');
+  const { user, logout } = useContext(AuthContext);
+ const loggedInEmail = user?.email;
 
 
-const { user, setUser } = useContext(AuthContext);
-if ( user=== null) {
-  return <div style={{ color: '#555', padding: '2rem' }}>Loading your wardrobe...</div>;
-}
-
-const loggedInEmail = user.email;
-  const filteredItems = items.filter(item => item.email === loggedInEmail);
 
 console.log("Logged-in email:", loggedInEmail);
 console.log("Clothing items:", items);
 console.log("Filtered items:", filteredItems);
 
 
+console.log("User from context:", user);
   // fetch cloth
-  useEffect(() => {
-    fetch('http://localhost:5000/clothing')
-      .then(res => res.json())
-      .then(data => setItems(data))
-      .catch(err => console.error('Error fetching clothing:', err));
-  }, []);
+useEffect(() => {
+  if (!user || !user.email) return;
 
+  fetch(`http://localhost:5000/api/clothing`)
+    .then(res => res.json())
+    .then(data => {
+      console.log('✅ User-specific clothing:', data);
+      setItems(data);
+    })
+    .catch(err => console.error('Error fetching clothing:', err));
+}, [user]);
+useEffect(() => {
+  if (user?.email && items.length > 0) {
+    const matched = items.filter(item => item.email === user.email);
+    setFilteredItems(matched);
+    console.log("Filtered items:", matched);
+  }
+}, [loggedInEmail, items]);
   // On mount: fetch weather
   useEffect(() => {
     setStatus('loading');
