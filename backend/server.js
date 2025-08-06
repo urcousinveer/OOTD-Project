@@ -103,7 +103,7 @@ app.get('/api/clothing/:email', async (req, res) => {
     console.log('   found user:', user?._id);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
-    const items = await ClothingItem.find({ userId: user._id });
+const items = await ClothingItem.find({ email: user.email });
     console.log(`   found ${items.length} items`);
     return res.json(items);
   } catch (err) {

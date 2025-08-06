@@ -45,7 +45,7 @@ console.log("User from context:", user);
 useEffect(() => {
   if (!user || !user.email) return;
 
-  fetch(`http://localhost:5000/api/clothing`)
+  fetch(`http://localhost:5000/api/clothing/${user.email}`)
     .then(res => res.json())
     .then(data => {
       console.log('✅ User-specific clothing:', data);
@@ -53,10 +53,12 @@ useEffect(() => {
     })
     .catch(err => console.error('Error fetching clothing:', err));
 }, [user]);
+
+
 useEffect(() => {
   if (user?.email && items.length > 0) {
     const matched = items.filter(item => item.email === user.email);
-    setFilteredItems(matched);
+    setFilteredItems(items);
     console.log("Filtered items:", matched);
   }
 }, [loggedInEmail, items]);
