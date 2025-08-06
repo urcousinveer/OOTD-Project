@@ -38,9 +38,11 @@
   padding: var(--pad);
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
-.sidebar-title {
+.sidebar-title,
+.sidebar-link.logout-button {
   font-size: 1.5rem;
   color: var(--color-primary);
+  margin-top: var(--gap-lg);
   margin-bottom: var(--gap-md);
 }
 .sidebar-link {
@@ -62,6 +64,9 @@
   background: var(--color-accent);
   color: var(--color-surface);
 }
+
+
+
 
 /* Main wardrobe panel */
 .main-wardrobe-container {
