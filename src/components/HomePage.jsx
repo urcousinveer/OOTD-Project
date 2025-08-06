@@ -105,21 +105,23 @@ useEffect(() => {
     >
       {/* ─── Sidebar ──────────────────────────────────────────────────────────── */}
       <div className="sidebar">
-        <div className="sidebar-title">OOTD</div>
+      <div className="sidebar-title">OOTD</div>
         {['Wardrobe', 'About', 'Generate Outfit', 'Add Clothes', 'Logout'].map(label => (
           <button
             key={label}
             className={`sidebar-link${selectedSidebar === label ? ' selected' : ''}`}
             onClick={() => {
+              if (label === 'Logout') {
+                logout();
+              } else {
                 handleSidebarClick(label);
               }
-            }
+            }}
           >
             {label}
           </button>
-        ))}
-        <LogoutButton className="sidebar-link logout-button" />
-      </div>
+  ))}
+</div>
 
  
 
