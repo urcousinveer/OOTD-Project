@@ -38,25 +38,25 @@ export default function HomePage() {
   const filteredItems = items.filter(item => item.email === loggedInEmail);
 
 
-  useEffect(() => {
-    const token = localStorage.getItem("authToken");
+useEffect(() => {
+  const token = localStorage.getItem("authToken");
 
-    if (!token) {
-      setUser(null);
-      return;
+  if (!token) {
+    setUser(null);
+    return;
+  }
+
+  axios.get("http://localhost:5000/api/me", {
+    headers: {
+      Authorization: `Bearer ${token}`,
     }
-
-    axios.get("http://localhost:5000/api/me", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }
-    })
-      .then(res => setUser({ name: res.data.name, email: res.data.email }))
-      .catch(() => setUser(null));
-  }, []);
+  })
+    .then(res => setUser({ name: res.data.name, email: res.data.email }))
+    .catch(() => setUser(null));
+}, []);
 
 
-  // fetch cloth
+// fetch cloth
   useEffect(() => {
     fetch('http://localhost:5000/clothing')
       .then(res => res.json())
@@ -93,15 +93,6 @@ export default function HomePage() {
     }
   };
 
-  // ─── Sidebar items list ─────────────────────────────────────────────────
-  const sidebarItems = [
-    'Wardrobe',
-    'About',
-    'Generate Outfit',
-    'Add Clothes',
-    'Logout',
-  ];
-
   return (
     <div
       className="app-layout"
@@ -115,53 +106,51 @@ export default function HomePage() {
       {/* ─── Sidebar ──────────────────────────────────────────────────────────── */}
       <div className="sidebar">
         <div className="sidebar-title">OOTD</div>
-
-        {sidebarItems.map(label => {
-          const isLogout = label === 'Logout';
-          return (
-            <button
-              key={label}
-              className={`sidebar-link${!isLogout && selectedSidebar === label ? ' selected' : ''}`}
-              onClick={() => {
-                if (isLogout) {
-                  logout();
-                } else {
-                  handleSidebarClick(label);
-                }
-              }}
-            >
-              {label}
-            </button>
-          );
-        })}
+        {['Wardrobe', 'About', 'Generate Outfit', 'Add Clothes', 'Logout'].map(label => (
+          <button
+            key={label}
+            className={`sidebar-link${selectedSidebar === label ? ' selected' : ''}`}
+            onClick={() => {
+                handleSidebarClick(label);
+              }
+            }
+          >
+            {label}
+          </button>
+        ))}
+        <LogoutButton className="sidebar-link logout-button" />
       </div>
+
+ 
 
 
       {/* ─── Main Content (Wardrobe or Add Clothes) ───────────────────────────── */}
-      <div className="main-wardrobe-container">
-        <div className="wardrobe-heading">
-          Welcome, {user?.name}
-        </div>
+       <div className="main-wardrobe-container">
+      <div className="wardrobe-heading">Welcome, {user?.name}
+        
+      </div>
 
         {view === 'wardrobe' ? (
           // ← YOUR WARDROBE GRID (handles its own fetch+render)
           <div className="clothing-grid">
-            {filteredItems.map(item => (
-              <div className="clothing-card" key={item._id}>
-                {item.imageUrl ? (
-                  <img src={item.imageUrl} alt={item.type} className="clothing-image" />
-                ) : (
-                  <div className="image-placeholder">{item.type}</div>
-                )}
-                <div className="clothing-info">
-                  <div><strong>{item.type}</strong></div>
-                  <div>Color: {item.color}</div>
-                  <div>Formality: {item.formality}</div>
-                  <div>Warmth: {item.warmth}</div>
-                </div>
-              </div>
-            ))}
-          </div>
+ {filteredItems.map(item => (
+    <div className="clothing-card" key={item._id}>
+      {item.imageUrl ? (
+        <img src={item.imageUrl} alt={item.type} className="clothing-image" />
+      ) : (
+        <div className="image-placeholder">{item.type}</div>
+      )}
+      <div className="clothing-info">
+        <div><strong>{item.type}</strong></div>
+        <div>Color: {item.color}</div>
+        <div>Formality: {item.formality}</div>
+        <div>Warmth: {item.warmth}</div>
+      </div>
+    </div>
+  ))}
+</div>
+          
+
         ) : (
           // ← YOUR EXISTING ADD-CLOTHES FLOW
           <div>
@@ -174,8 +163,7 @@ export default function HomePage() {
             <MainPage clothes={[]} onAddClothing={() => setView('wardrobe')} />
           </div>
         )}
-      </div>
-
+</div>
       {/* ─── Weather Panel ─────────────────────────────────────────────────────── */}
       <div className="weather-panel">
         {status === 'loading' && <div>Loading weather...</div>}
