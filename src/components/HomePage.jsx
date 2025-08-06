@@ -3,8 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import Wardrobe from './Wardrobe';          // ← your Wardrobe.jsx
-import MainPage from './MainPage';          // ← your existing Add Clothes flow
+import MainPage from './MainPage';
 import LogoutButton from './LogoutButton';
 import {
   getCurrentPositionAsync,
@@ -12,57 +11,50 @@ import {
 } from '../services/LocationWeatherService';
 import { getSuggestedOutfit } from '../services/OutfitService';
 import './HomePage.css';
-import axios from 'axios';
-//import { useAuth } from '../context/AuthContext'; // or your auth source
-
 
 export default function HomePage() {
-  // — Sidebar / view state
+  // Sidebar / view state
   const [selectedSidebar, setSelectedSidebar] = useState('Wardrobe');
-  const [view, setView]               = useState('wardrobe');
-
-  // clothing
+  const [view, setView] = useState('wardrobe');
+  // Tabs/categories
+  const categories = ['T-shirt', 'Jeans', 'Hoodie', 'Jacket'];
+  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+  // Clothing
   const [items, setItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
- 
-  
-  // — Weather state
+  // Weather
   const [weather, setWeather] = useState(null);
-  const [status,  setStatus]  = useState('loading');
-  const [error,   setError]   = useState('');
+  const [status, setStatus] = useState('loading');
+  const [error, setError] = useState('');
   const { user, logout } = useContext(AuthContext);
- const loggedInEmail = user?.email;
 
+  // fetch clothing
+  useEffect(() => {
+    if (!user || !user.email) return;
+    fetch(`http://localhost:5000/api/clothing/${user.email}`)
+      .then(res => res.json())
+      .then(data => setItems(data))
+      .catch(err => console.error('Error fetching clothing:', err));
+  }, [user]);
 
+  // Filtering by category
+  useEffect(() => {
+    if (items.length === 0) {
+      setFilteredItems([]);
+      return;
+    }
+    setFilteredItems(
+      items.filter(
+        item =>
+          item.type &&
+          item.type.toLowerCase().replace('-', '').includes(
+            selectedCategory.toLowerCase().replace('-', '')
+          )
+      )
+    );
+  }, [selectedCategory, items]);
 
-console.log("Logged-in email:", loggedInEmail);
-console.log("Clothing items:", items);
-console.log("Filtered items:", filteredItems);
-
-
-console.log("User from context:", user);
-  // fetch cloth
-useEffect(() => {
-  if (!user || !user.email) return;
-
-  fetch(`http://localhost:5000/api/clothing/${user.email}`)
-    .then(res => res.json())
-    .then(data => {
-      console.log('✅ User-specific clothing:', data);
-      setItems(data);
-    })
-    .catch(err => console.error('Error fetching clothing:', err));
-}, [user]);
-
-
-useEffect(() => {
-  if (user?.email && items.length > 0) {
-    const matched = items.filter(item => item.email === user.email);
-    setFilteredItems(items);
-    console.log("Filtered items:", matched);
-  }
-}, [loggedInEmail, items]);
-  // On mount: fetch weather
+  // Weather on mount
   useEffect(() => {
     setStatus('loading');
     getCurrentPositionAsync()
@@ -81,11 +73,13 @@ useEffect(() => {
       });
   }, []);
 
-  // Sidebar click handler
+  // Sidebar click
   const handleSidebarClick = (label) => {
     setSelectedSidebar(label);
     if (label === 'Add Clothes') {
       setView('main');
+    } else if (label === 'Logout') {
+      logout();
     } else {
       setView('wardrobe');
     }
@@ -95,98 +89,113 @@ useEffect(() => {
     <div
       className="app-layout"
       style={{
-        backgroundImage:   `url(${process.env.PUBLIC_URL}/closet-bg.png)`,
-        backgroundSize:    'cover',
-        backgroundRepeat:  'no-repeat',
-        backgroundPosition:'center center',
+        backgroundImage: `url(${process.env.PUBLIC_URL}/closet-bg.png)`,
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center center',
       }}
     >
-      {/* ─── Sidebar ──────────────────────────────────────────────────────────── */}
+      {/* Sidebar */}
       <div className="sidebar">
-      <div className="sidebar-title">OOTD</div>
-        {['Wardrobe', 'Generate Outfit', 'Add Clothes', 'About', 'Logout'].map(label => (
+        <div className="sidebar-title">OOTD</div>
+        {['Wardrobe', 'Generate Outfit', 'Add Clothes', 'Logout'].map(label => (
           <button
             key={label}
             className={`sidebar-link${selectedSidebar === label ? ' selected' : ''}`}
-            onClick={() => {
-              if (label === 'Logout') {
-                logout();
-              } else {
-                handleSidebarClick(label);
-              }
-            }}
+            onClick={() => handleSidebarClick(label)}
           >
             {label}
           </button>
-  ))}
-</div>
-
- 
-
-
-      {/* ─── Main Content (Wardrobe or Add Clothes) ───────────────────────────── */}
-       <div className="main-wardrobe-container">
-      <div className="wardrobe-heading">Welcome, {user?.name}
-        
+        ))}
       </div>
 
-        {view === 'wardrobe' ? (
-          // ← YOUR WARDROBE GRID (handles its own fetch+render)
-          <div className="clothing-grid">
- {filteredItems.map(item => (
-    <div className="clothing-card" key={item._id}>
-      {item.imageUrl ? (
-        <img src={item.imageUrl} alt={item.type} className="clothing-image" />
-      ) : (
-        <div className="image-placeholder">{item.type}</div>
-      )}
-      <div className="clothing-info">
-        <div><strong>{item.type}</strong></div>
-        <div>Color: {item.color}</div>
-        <div>Formality: {item.formality}</div>
-        <div>Warmth: {item.warmth}</div>
-      </div>
-    </div>
-  ))}
-</div>
-          
+      {/* Main Content: header and grid together */}
+      <div className="main-content">
+        {/* Header */}
+        <div className="header-section">
+          <div className="header-main">
+            <div className="wardrobe-heading">Welcome, {user?.name || 'User'}</div>
+            {/* Category Tabs */}
+            {view === 'wardrobe' && (
+              <div className="category-tabs">
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    className={`tab-btn${selectedCategory === cat ? ' active' : ''}`}
+                    onClick={() => setSelectedCategory(cat)}
+                  >
+                    {cat + (cat.endsWith('s') ? '' : 's')}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          {/* Weather/Suggestion in header */}
+          <div className="header-weather">
+            <div className="weather-panel">
+              {status === 'loading' && <div>Loading weather...</div>}
+              {status === 'error' && (
+                <div style={{ color: 'crimson', fontWeight: 500 }}>
+                  {error}
+                  <br />
+                  <span style={{ fontWeight: 400, fontSize: 14 }}>Try allowing location access.</span>
+                </div>
+              )}
+              {status === 'ready' && weather && (
+                <>
+                  <div className="weather-location">
+                    <span role="img" aria-label="pin">📍</span> Current Weather in {weather.city}
+                  </div>
+                  <div className="weather-temp">{weather.temp}°C</div>
+                  <div className="weather-desc">{weather.desc}</div>
+                  <div className="weather-suggestion-title">Suggested Outfit</div>
+                  <div className="weather-suggestion">
+                    {getSuggestedOutfit(weather.temp, weather.desc)}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
 
-        ) : (
-          // ← YOUR EXISTING ADD-CLOTHES FLOW
-          <div>
-            <button
-              className="back-to-wardrobe-btn"
-              onClick={() => setView('wardrobe')}
-            >
-              Back to Wardrobe
-            </button>
-            <MainPage clothes={[]} onAddClothing={() => setView('wardrobe')} />
-          </div>
-        )}
-</div>
-      {/* ─── Weather Panel ─────────────────────────────────────────────────────── */}
-      <div className="weather-panel">
-        {status === 'loading' && <div>Loading weather...</div>}
-        {status === 'error' && (
-          <div style={{ color: 'crimson', fontWeight: 500 }}>
-            {error}
-            <br />
-            <span style={{ fontWeight: 400, fontSize: 14 }}>Try allowing location access.</span>
-          </div>
-        )}
-        {status === 'ready' && weather && (
-          <>
-            <div className="weather-location">
-              <span role="img" aria-label="pin">📍</span> Current Weather in {weather.city}
+        {/* Clothing Grid / Add Clothes Flow */}
+        <div className="main-wardrobe-container">
+          {view === 'wardrobe' ? (
+            <div className="clothing-grid">
+              {filteredItems.length === 0 ? (
+                <div style={{ marginTop: 40, textAlign: 'center', color: '#c09a5b', fontSize: 20 }}>
+                  No items in this category.
+                </div>
+              ) : (
+                filteredItems.map(item => (
+                  <div className="clothing-card" key={item._id}>
+                    {item.imageUrl ? (
+                      <img src={item.imageUrl} alt={item.type} className="clothing-image" />
+                    ) : (
+                      <div className="image-placeholder">{item.type}</div>
+                    )}
+                    <div className="clothing-info">
+                      <div><strong>{item.type}</strong></div>
+                      <div>Color: {item.color}</div>
+                      <div>Formality: {item.formality}</div>
+                      <div>Warmth: {item.warmth}</div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
-            <div className="weather-temp">{weather.temp}°C</div>
-            <div className="weather-desc">{weather.desc}</div>
-            <div className="weather-suggestion-title">Suggested Outfit</div>
-            <div className="weather-suggestion">
-              {getSuggestedOutfit(weather.temp, weather.desc)}
+          ) : (
+            <div>
+              <button
+                className="back-to-wardrobe-btn"
+                onClick={() => setView('wardrobe')}
+              >
+                Back to Wardrobe
+              </button>
+              <MainPage clothes={[]} onAddClothing={() => setView('wardrobe')} />
             </div>
-          </>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
