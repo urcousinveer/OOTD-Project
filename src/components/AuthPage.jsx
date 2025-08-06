@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { FaEnvelope, FaGoogle, FaFacebookF, FaUser } from 'react-icons/fa';
+import { FaEnvelope, FaGoogle, FaFacebookF, FaUser, FaKey } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import LeftPanelImg from '../assets/left-panel.jpeg';
 import { AuthContext } from '../contexts/AuthContext';
@@ -320,16 +320,15 @@ useEffect(() => {
             required
           />
           </InputGroup>
-          
-          <InputGroup>
+
           <Label htmlFor="password">
           {isLogin ? 'Enter your password' : 'Enter your password'}
-        </Label><br></br>
+        </Label>
+          <InputGroup>
+          <Icon><FaKey /></Icon>
           <Input id="password" type="password" placeholder="password" value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
-            
-          />
+            required/>
         </InputGroup>
         <Button type="submit">{isLogin ? 'Log in' : 'Sign up'}</Button>
 
