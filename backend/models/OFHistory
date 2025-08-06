@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 
-const outfitHistorySchema = new mongoose.Schema({
-  Email: String,
-  itemId: mongoose.Schema.Types.ObjectId,
-  wornDate: { type: Date, default: Date.now },
+const OFHistorySchema = new mongoose.Schema({
+  userEmail: { type: String, required: true },
+  itemId:    { type: mongoose.Schema.Types.ObjectId, ref: 'ClothingItem' },
+  wornDate:  { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('OFHistory', outfitHistorySchema);
+
+module.exports = mongoose.models.OFHistory || mongoose.model('OFHistory', OFHistorySchema);

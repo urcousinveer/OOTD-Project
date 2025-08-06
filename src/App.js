@@ -15,6 +15,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import HomePage from './components/HomePage';
 import UploadClothingForm from './components/UploadClothingForm';
 import Wardrobe from './components/Wardrobe';
+import GenerateOutfit from './components/GenerateOutfit';
 
 export default function App() {
   return (
@@ -25,6 +26,8 @@ export default function App() {
         <Route path="/signup" element={<AuthPage mode="signup" />} />
 
         {/* All routes below are protected */}
+
+        
         <Route
           path="/"
           element={
@@ -33,6 +36,15 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+
+    
+        <Route 
+        path="/outfit-suggestion" 
+        element={<GenerateOutfit />} 
+        />
+  
+
+
         <Route
           path="/wardrobe"
           element={

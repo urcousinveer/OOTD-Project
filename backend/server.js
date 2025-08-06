@@ -48,7 +48,7 @@ mongoose
     }
     // ──────────────────────────────────────────────────────
   })
-  .catch(err => console.error('❌ Connection error:', err));
+  .catch(err => console.error(''));
 // ─── Auth / User Routes ───────────────────────────────────────────────────────
 app.use('/api', userRoute);
 
@@ -113,8 +113,8 @@ const items = await ClothingItem.find({ email: user.email });
 });
 // ─── Other Routes ──────────────────────────────────────────────────────────────
 app.use('/api/wardrobe',   wardrobeRoutes);
-app.use('/suggest-outfit', outfitSuggestRoute);
-app.use('/replace-item',   outfitReplaceRoute);
+app.use('/api/suggest-outfit', outfitSuggestRoute);
+app.use('/api/replace-item',   outfitReplaceRoute);
 
 // ─── Start Server ─────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
