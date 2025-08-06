@@ -1,14 +1,19 @@
 // src/components/HomePage.jsx
 
 import React, { useEffect, useState } from 'react';
+import { useContext } from 'react';
+import { AuthContext } from '../contexts/AuthContext';
 import Wardrobe from './Wardrobe';          // ← your Wardrobe.jsx
 import MainPage from './MainPage';          // ← your existing Add Clothes flow
+import LogoutButton from './LogoutButton';
 import {
   getCurrentPositionAsync,
   fetchWeatherAsync,
 } from '../services/LocationWeatherService';
 import { getSuggestedOutfit } from '../services/OutfitService';
 import './HomePage.css';
+import axios from 'axios';
+//import { useAuth } from '../context/AuthContext'; // or your auth source
 
 
 export default function HomePage() {
@@ -23,6 +28,32 @@ export default function HomePage() {
   const [weather, setWeather] = useState(null);
   const [status,  setStatus]  = useState('loading');
   const [error,   setError]   = useState('');
+
+
+const { user, setUser } = useContext(AuthContext);
+  const loggedInEmail = user?.token
+
+
+  const filteredItems = items.filter(item => item.email === loggedInEmail);
+
+
+useEffect(() => {
+  const token = localStorage.getItem("authToken");
+
+  if (!token) {
+    setUser(null);
+    return;
+  }
+
+  axios.get("http://localhost:5000/api/me", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  })
+    .then(res => setUser({ name: res.data.name, email: res.data.email }))
+    .catch(() => setUser(null));
+}, []);
+
 
 // fetch cloth
   useEffect(() => {
@@ -89,13 +120,15 @@ export default function HomePage() {
 
 
       {/* ─── Main Content (Wardrobe or Add Clothes) ───────────────────────────── */}
-      <div className="main-wardrobe-container">
-        <div className="wardrobe-heading">Welcome,</div>
+       <div className="main-wardrobe-container">
+      <div className="wardrobe-heading">Welcome, {user?.name}
+        <LogoutButton/>
+      </div>
 
         {view === 'wardrobe' ? (
           // ← YOUR WARDROBE GRID (handles its own fetch+render)
           <div className="clothing-grid">
-  {items.map(item => (
+ {filteredItems.map(item => (
     <div className="clothing-card" key={item._id}>
       {item.imageUrl ? (
         <img src={item.imageUrl} alt={item.type} className="clothing-image" />
@@ -125,8 +158,7 @@ export default function HomePage() {
             <MainPage clothes={[]} onAddClothing={() => setView('wardrobe')} />
           </div>
         )}
-      </div>
-
+</div>
       {/* ─── Weather Panel ─────────────────────────────────────────────────────── */}
       <div className="weather-panel">
         {status === 'loading' && <div>Loading weather...</div>}

@@ -1,8 +1,10 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FaEnvelope, FaGoogle, FaFacebookF, FaUser } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 import LeftPanelImg from '../assets/left-panel.jpeg';
 import { AuthContext } from '../contexts/AuthContext';
 import axios from 'axios';
@@ -183,26 +185,50 @@ const ErrorMessage = styled.p`
 
 export default function AuthPage({ mode }) {
   const isLogin = mode === 'login';
-  //const { login } = useContext(AuthContext); // ← grab login()
   const navigate = useNavigate(); // ← grab navigate()
-  const { login } = useContext(AuthContext);
+  const location = useLocation();
+  const { login, setUser } = useContext(AuthContext);
+
+  const successMessage = location.state?.message || '';
+  useEffect(() => {
+  if (isLogin && successMessage) {
+    toast.success(successMessage);
+    window.history.replaceState({}, document.title);
+  }
+}, [isLogin, successMessage]);
+
+useEffect(() => {
+  const token = localStorage.getItem('authToken');
+  const name = localStorage.getItem('userName');
+  if (token && name) {
+    setUser({ email: token, name });
+  }
+}, []);
+ 
   const [error, setError] = useState('');
-
   const [name, setName] = useState('');
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
 
     if (isLogin) {
       // —— LOGIN branch ——
-    axios.post("http://localhost:5000/api/login", {email, password})
+   axios.post("http://localhost:5000/api/login", { email, password }, {
+})
     .then(result => {console.log(result)
-      if (result.data.message === "Login successful" && result.data.token) {
-        login(result.data.token);   // ✅ store in context/localStorage
+
+      const token = result.data.token;
+
+      if (result.data.message === "Login successful" && token) {
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('userName', result.data.name);
+
+        login(token, result.data.name);   // ✅ store in context/localStorage
         navigate('/');  // send them to the protected HomePage
       }
     })
@@ -219,9 +245,12 @@ export default function AuthPage({ mode }) {
    } else {
           // —— SIGN UP branch ——
       axios
-        .post("http://localhost:5000/api/signup", { name, email, password })
+        .post("http://localhost:5000/api/signup", { name, email, password }, {
+})
         .then(() => {
-          navigate("/login");
+          navigate("/login", {
+            state: { message: "Registered Successfully. Proceed with Login" },
+          });
         })
         .catch(err => {
           setError(
@@ -238,6 +267,12 @@ export default function AuthPage({ mode }) {
       <Hero />
       <FormWrapper as="form" onSubmit={handleSubmit}>
         <Title>{isLogin ? 'LOG IN' : 'SIGN UP'}</Title>
+        {isLogin && successMessage && (
+          <p style={{ color: 'lightgreen', fontWeight: 'bold', marginBottom: '1rem' }}>
+            {successMessage}
+            </p>
+)}
+
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
 

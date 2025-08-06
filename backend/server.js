@@ -12,9 +12,9 @@ const outfitSuggestRoute= require('./routes/outfitSuggest');
 const outfitReplaceRoute= require('./routes/outfitReplace');
 
 const app = express();
-app.use(cors());
+app.use(cors({origin: 'http://localhost:3000', 
+  credentials: true   }));
 app.use(express.json());
-
 
 const clothingRoute = require('./routes/clothing');
 app.use('/clothing', clothingRoute);

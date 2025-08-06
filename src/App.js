@@ -7,6 +7,8 @@ import {
   Route,
   Navigate,
 } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import AuthPage from './components/AuthPage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -51,6 +53,9 @@ export default function App() {
         {/* Fallback: redirect to login if no match */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
+
+      <ToastContainer position="top-right" autoClose={3000} />
+
     </Router>
   );
 }

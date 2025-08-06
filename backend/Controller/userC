@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const userController = require('../controller/userC');
 const jwt = require('jsonwebtoken');
 
 // register
@@ -22,14 +23,37 @@ exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
-    if (!user || !(await user.checkPassword(password))) {
-      return res.status(401).json({ error: "Invalid email or password" });
-    }
+    if (!user) return res.status(401).json({ error: "Invalid email or password" });
+
+    const isMatch = await user.checkPassword(password);
+    if (!isMatch) return res.status(401).json({ error: "Invalid email or password" });
 
     const token = jwt.sign({ id: user._id }, "jwt_secret_key", { expiresIn: "1h" });
-    res.status(200).json({ message: "Login successful", token });
+
+    res.status(200).json({ message: "Login successful", token, name: user.name });
   } catch (err) {
     console.error("Login error:", err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+//logout
+exports.logout = (req, res) => {
+  res.status(200).json({ message: 'Logged out successfully' });
+};
+
+
+exports.getMe = (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Missing token" });
+  }
+
+  const token = authHeader.split(" ")[1];
+  try {
+    const decoded = jwt.verify(token, "jwt_secret_key");
+    res.status(200).json({ message: "User authenticated", userId: decoded.id });
+  } catch (err) {
+    return res.status(401).json({ error: "Invalid token" });
   }
 };

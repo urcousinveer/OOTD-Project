@@ -1,5 +1,6 @@
 // web/src/contexts/AuthContext.js
 import React, { createContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
 export const AuthContext = createContext({
   user: null,
@@ -13,23 +14,31 @@ export function AuthProvider({ children }) {
   // On mount, check for a token in localStorage
   useEffect(() => {
     const token = localStorage.getItem('authToken');
-    if (token) {
-      setUser({ token });
+    const name = localStorage.getItem('userName');
+    if (token  && name) {
+      setUser({ token, name });
     }
   }, []);
 
-  const login = (token) => {
+  const login = (token, name) => {
     localStorage.setItem('authToken', token);
-    setUser({ token });
+    localStorage.setItem('userName', name);
+    setUser({token, name });
   };
 
-  const logout = () => {
+  const logout = async() => {
+    try {
+      await axios.post('http://localhost:5000/api/logout', {});
+    } catch (err) {
+      console.error('Logout request failed:', err);
+    }
+
     localStorage.removeItem('authToken');
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, setUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
