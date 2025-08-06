@@ -104,7 +104,7 @@ useEffect(() => {
       {/* ─── Sidebar ──────────────────────────────────────────────────────────── */}
       <div className="sidebar">
       <div className="sidebar-title">OOTD</div>
-        {['Wardrobe', 'About', 'Generate Outfit', 'Add Clothes', 'Logout'].map(label => (
+        {['Wardrobe', 'Generate Outfit', 'Add Clothes', 'About', 'Logout'].map(label => (
           <button
             key={label}
             className={`sidebar-link${selectedSidebar === label ? ' selected' : ''}`}

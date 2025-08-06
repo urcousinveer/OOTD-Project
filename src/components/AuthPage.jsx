@@ -93,7 +93,7 @@ const Icon = styled.div`
 `;
 
 const Input = styled.input`
-  width: 100%;
+  width: 50%;
   padding: 0.75rem 1rem 0.75rem 3rem;
   border-radius: 8px;
   border: none;
@@ -108,7 +108,7 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
-  width: 100%;
+  width: 40%;
   padding: 0.75rem;
   margin-top: 0.5rem;
   border: none;
@@ -323,8 +323,8 @@ useEffect(() => {
           
           <InputGroup>
           <Label htmlFor="password">
-          {isLogin ? 'Enter your password' : 'Sign in with email address'}
-        </Label>
+          {isLogin ? 'Enter your password' : 'Enter your password'}
+        </Label><br></br>
           <Input id="password" type="password" placeholder="password" value={password}
             onChange={(e) => setPassword(e.target.value)}
             required

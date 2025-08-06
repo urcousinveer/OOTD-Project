@@ -21,7 +21,3 @@ function CategorySection({ items }) {
 }
 
 export default CategorySection;
-
-
-
-
