@@ -12,12 +12,8 @@ import {
 import { getSuggestedOutfit } from '../services/OutfitService';
 import GenerateOutfit from './GenerateOutfit';
 import './HomePage.css';
-<<<<<<< Updated upstream
-=======
+
 import axios from 'axios';
-
-
->>>>>>> Stashed changes
 
 export default function HomePage() {
   // Sidebar / view state
@@ -29,12 +25,10 @@ export default function HomePage() {
   // Clothing
   const [items, setItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
-<<<<<<< Updated upstream
   // Weather
-=======
 
   // — Weather state
->>>>>>> Stashed changes
+
   const [weather, setWeather] = useState(null);
   const [status, setStatus] = useState('loading');
   const [error, setError] = useState('');
@@ -90,15 +84,11 @@ export default function HomePage() {
     setSelectedSidebar(label);
     if (label === 'Add Clothes') {
       setView('main');
-<<<<<<< Updated upstream
     } else if (label === 'Logout') {
       logout();
-    } else {
-=======
     } else if (label === 'Generate Outfit') {
        setView('generate');
      } else {
->>>>>>> Stashed changes
       setView('wardrobe');
     }
   };
@@ -127,7 +117,7 @@ export default function HomePage() {
         ))}
       </div>
 
-<<<<<<< Updated upstream
+
       {/* Main Content: header and grid together */}
       <div className="main-content">
         {/* Header */}
@@ -202,7 +192,7 @@ export default function HomePage() {
                   </div>
                 ))
               )}
-=======
+
         {view === 'wardrobe' ? (
           // ← YOUR WARDROBE GRID (handles its own fetch+render)
           <div className="clothing-grid">
@@ -257,8 +247,9 @@ export default function HomePage() {
           <>
             <div className="weather-location">
               <span role="img" aria-label="pin">📍</span> Current Weather in {weather.city}
->>>>>>> Stashed changes
+
             </div>
+            </>
           ) : (
             <div>
               <button
