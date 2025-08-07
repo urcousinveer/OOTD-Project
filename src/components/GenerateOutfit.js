@@ -9,6 +9,8 @@ function GenerateOutfit({ weather }) {
   const { user } = useContext(AuthContext);
   const [suggestedOutfit, setSuggestedOutfit] = useState([]);
 
+
+
   useEffect(() => {
   if (user?.email && weather?.temp && weather?.desc) {
     const fetchOutfit = async () => {

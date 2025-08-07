@@ -33,6 +33,8 @@ export default function HomePage() {
   const [error, setError] = useState('');
   const { user, logout } = useContext(AuthContext);
 
+
+
   // fetch clothing
   useEffect(() => {
     if (!user || !user.email) return;
@@ -201,6 +203,7 @@ export default function HomePage() {
     </button>
         <h2>👕Today's Outfit</h2>
         <GenerateOutfit weather={weather} user={user} />
+       
 </div>
           ) : (
             <div>
