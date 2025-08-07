@@ -27,8 +27,6 @@ export default function HomePage() {
   const [filteredItems, setFilteredItems] = useState([]);
   // Weather
 
-  // — Weather state
-
   const [weather, setWeather] = useState(null);
   const [status, setStatus] = useState('loading');
   const [error, setError] = useState('');
@@ -189,30 +187,13 @@ export default function HomePage() {
                       <div>Formality: {item.formality}</div>
                       <div>Warmth: {item.warmth}</div>
                     </div>
+                  
                   </div>
                 ))
               )}
-
-        {view === 'wardrobe' ? (
-          // ← YOUR WARDROBE GRID (handles its own fetch+render)
-          <div className="clothing-grid">
- {filteredItems.map(item => (
-    <div className="clothing-card" key={item._id}>
-      {item.imageUrl ? (
-        <img src={item.imageUrl} alt={item.type} className="clothing-image" />
-      ) : (
-        <div className="image-placeholder">{item.type}</div>
-      )}
-      <div className="clothing-info">
-        <div><strong>{item.type}</strong></div>
-        <div>Color: {item.color}</div>
-        <div>Formality: {item.formality}</div>
-        <div>Warmth: {item.warmth}</div>
-      </div>
-    </div>
-  ))}
-</div>
-        ) : view === 'generate' ? (
+              </div>
+                
+):  view === 'generate' ? (
   <div>
     <button className="back-to-wardrobe-btn" onClick={() => setView('wardrobe')}>
       Back to Wardrobe
@@ -220,36 +201,6 @@ export default function HomePage() {
         <h2>👕Today's Outfit</h2>
         <GenerateOutfit weather={weather} user={user} />
 </div>
-        ) : (
-          // ← YOUR EXISTING ADD-CLOTHES FLOW
-          <div>
-            <button
-              className="back-to-wardrobe-btn"
-              onClick={() => setView('wardrobe')}
-            >
-              Back to Wardrobe
-            </button>
-            <MainPage clothes={[]} onAddClothing={() => setView('wardrobe')} />
-          </div>
-        )}
-</div>
-      {/* ─── Weather Panel ─────────────────────────────────────────────────────── */}
-      <div className="weather-panel">
-        {status === 'loading' && <div>Loading weather...</div>}
-        {status === 'error' && (
-          <div style={{ color: 'crimson', fontWeight: 500 }}>
-            {error}
-            <br />
-            <span style={{ fontWeight: 400, fontSize: 14 }}>Try allowing location access.</span>
-          </div>
-        )}
-        {status === 'ready' && weather && (
-          <>
-            <div className="weather-location">
-              <span role="img" aria-label="pin">📍</span> Current Weather in {weather.city}
-
-            </div>
-            </>
           ) : (
             <div>
               <button
