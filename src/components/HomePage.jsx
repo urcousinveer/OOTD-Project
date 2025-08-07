@@ -13,6 +13,7 @@ import { getSuggestedOutfit } from '../services/OutfitService';
 import GenerateOutfit from './GenerateOutfit';
 import './HomePage.css';
 
+
 import axios from 'axios';
 
 export default function HomePage() {
