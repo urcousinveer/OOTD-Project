@@ -18,11 +18,14 @@ router.post('/', async (req, res) => {
     let tagsNeeded = [];
 
     if (temp < 10) {
-      tagsNeeded = ['jacket', 'hoodie', 'Jeans'];
-    } else if (temp >= 10 && temp <= 20) {
-      tagsNeeded = ['Jeans', 'Shirt', 'T-shirt'];
+      tagsNeeded = ['jacket', 'Jeans', 'Shirt'];
+    } else if (temp >= 10 && temp <= 15) {
+      tagsNeeded = ['Jeans', 'Shirt', 'Hoodie'];
+    }
+    else if (temp >= 16 && temp <= 20) {
+      tagsNeeded = ['Jeans' || 'Shorts' , 'T-shirt'];
     } else {
-      tagsNeeded = ['Shorts', 'T-shirt', 'Jeans'];
+      tagsNeeded = ['Shorts', 'T-shirt'];
     }
 
 
@@ -57,38 +60,24 @@ router.post('/', async (req, res) => {
 
     console.log('All Matching Items:', allMatchingItems.map(i => `${i.type} - ${i.name}`));
 
-    // Group by type
-const grouped = {
-  Shirt: [],
-  Jeans: [],
-  'T-shirt': [],
-  hoodie: [],
-  jacket: [],
-  shorts: [],
-};
-
+    const grouped = {};
 allMatchingItems.forEach(item => {
-  if (grouped[item.type]) {
-    grouped[item.type].push(item);
-  }
+  const type = item.type.toLowerCase();
+  if (!grouped[type]) grouped[type] = [];
+  grouped[type].push(item);
 });
 
-// Random picker
+// Pick one random item for each tag in tagsNeeded
 const pickRandom = arr => arr.length > 0 ? arr[Math.floor(Math.random() * arr.length)] : null;
 
-// Build the suggested outfit (1 shirt + 1 jeans, if available)
 const finalSuggestions = [];
-
-if (tagsNeeded.includes('shirt')) {
-  const shirt = pickRandom(grouped.Shirt);
-  if (shirt) finalSuggestions.push(shirt);
-}
-
-if (tagsNeeded.includes('Jeans')) {
-  const jeans = pickRandom(grouped.Jeans);
-  if (jeans) finalSuggestions.push(jeans);
-}
-
+tagsNeeded.forEach(tag => {
+  const lowerTag = tag.toLowerCase();
+  if (grouped[lowerTag]) {
+    const selected = pickRandom(grouped[lowerTag]);
+    if (selected) finalSuggestions.push(selected);
+  }
+});
 
 // Final response
 return res.json({
